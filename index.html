@@ -70,6 +70,16 @@
       bottom: 24px;
       right: 24px;
     }
+
+    .additional {
+  font-size: 13px;
+  color: #1976d2;       /* blu Material */
+  font-weight: 500;
+  margin-top: 2px;
+}
+strong {
+  font-weight: 600;
+}
   </style>
 </head>
 
@@ -86,21 +96,96 @@
 
 <script>
 const schemes = [
-  { name:"ASSASSINATE", desc:"nemico a 50% (uccidi)", seq:["DETONATE CHARGE","SCOUT THE ROOFTOPS","RUNIC BINDING"] },
-  { name:"BREAKTHROUGH", desc:"scheme in deploy nemico senza nemici a 2\"", seq:["ASSASSINATE","PUBLIC DEMOSTRATION","FRAME JOB"] },
-  { name:"DETONATE CHARGE", desc:"2 scheme a 2\" da nemici (3)", seq:["GRAVE ROBBING","TAKE THE HIGHGROUND","RUNIC BINDING"] },
-  { name:"ENSNARE", desc:"2 scheme a 2\" da modello unico", seq:["RESHAPE THE LAND","SEARCH THE AREA","FRAME JOB"] },
-  { name:"FRAME JOB", desc:"amico ferito in metà nemica", seq:["HARNESS THE LAYLANE","SCOUT THE ROOFTOPS","PUBLIC DEMOSTRATION"] },
-  { name:"GRAVE ROBBING", desc:"nemico ucciso a 2\"", seq:["MAKE IT LOOK LIKE AN ACCIDENT","LEAVE YOUR MARK","RUNIC BINDING"] },
-  { name:"HARNESS THE LAYLANE", desc:"2 scheme su centerline", seq:["GRAVE ROBBING","SCOUT THE ROOFTOPS","ASSASSINATE"] },
-  { name:"LEAVE YOUR MARK", desc:"più schemi a 1\" dal centro", seq:["MAKE IT LOOK LIKE AN ACCIDENT","TAKE THE HIGHGROUND","RESHAPE THE LAND"] },
-  { name:"MAKE IT LOOK LIKE AN ACCIDENT", desc:"nemico cade", seq:["RESHAPE THE LAND","ENSNARE","BREAKTHROUGH"] },
-  { name:"PUBLIC DEMOSTRATION", desc:"nemico con 2 minion", seq:["ASSASSINATE","HARNESS THE LAYLANE","DETONATE CHARGE"] },
-  { name:"RESHAPE THE LAND", desc:"4 marker in metà nemica", seq:["PUBLIC DEMOSTRATION","BREAKTHROUGH","SEARCH THE AREA"] },
-  { name:"RUNIC BINDING", desc:"scheme a triangolo", seq:["LEAVE YOUR MARK","TAKE THE HIGHGROUND","ENSNARE"] },
-  { name:"SCOUT THE ROOFTOPS", desc:"2 scheme su scenici alti", seq:["DETONATE CHARGE","GRAVE ROBBING","LEAVE YOUR MARK"] },
-  { name:"SEARCH THE AREA", desc:"3 scheme su scenico", seq:["DETONATE CHARGE","SCOUT THE ROOFTOPS","HARNESS THE LAYLANE"] },
-  { name:"TAKE THE HIGHGROUND", desc:"2 scenici alti controllati", seq:["MAKE IT LOOK LIKE AN ACCIDENT","ENSNARE","SEARCH THE AREA"] }
+  {
+    name: "ASSASSINATE",
+    desc: "**nemico** a 50% o meno",
+    additionalPoint: "uccidi",
+    seq: ["DETONATE CHARGE", "SCOUT THE ROOFTOPS", "RUNIC BINDING"]
+  },
+  {
+    name: "BREAKTHROUGH",
+    desc: "scheme in deploy nemico senza nemici a 2\"",
+    additionalPoint: "centerline e mio deploy",
+    seq: ["ASSASSINATE", "PUBLIC DEMOSTRATION", "FRAME JOB"]
+  },
+  {
+    name: "DETONATE CHARGE",
+    desc: "2 scheme a 2\" da nemici",
+    additionalPoint: "3 invece",
+    seq: ["GRAVE ROBBING", "TAKE THE HIGHGROUND", "RUNIC BINDING"]
+  },
+  {
+    name: "ENSNARE",
+    desc: "2 scheme a 2\" da un modello unico",
+    additionalPoint: "engaged da uno meno costoso",
+    seq: ["RESHAPE THE LAND", "SEARCH THE AREA", "FRAME JOB"]
+  },
+  {
+    name: "FRAME JOB",
+    desc: "**amico** ferito in metà nemica",
+    additionalPoint: "con scheme a 2\"",
+    seq: ["HARNESS THE LAYLANE", "SCOUT THE ROOFTOPS", "PUBLIC DEMOSTRATION"]
+  },
+  {
+    name: "GRAVE ROBBING",
+    desc: "nemico ucciso a 2\" da scheme e **marker**",
+    additionalPoint: "2 interact su remains",
+    seq: ["MAKE IT LOOK LIKE AN ACCIDENT", "LEAVE YOUR MARK", "RUNIC BINDING"]
+  },
+  {
+    name: "HARNESS THE LAYLANE",
+    desc: "2 scheme su centerline a 6\" senza nemici a 2\"",
+    additionalPoint: "3",
+    seq: ["GRAVE ROBBING", "SCOUT THE ROOFTOPS", "ASSASSINATE"]
+  },
+  {
+    name: "LEAVE YOUR MARK",
+    desc: "più schemi a 1\" dal centro",
+    additionalPoint: "2 a fine turno dopo rimozione",
+    seq: ["MAKE IT LOOK LIKE AN ACCIDENT", "TAKE THE HIGHGROUND", "RESHAPE THE LAND"]
+  },
+  {
+    name: "MAKE IT LOOK LIKE AN ACCIDENT",
+    desc: "nemico cade",
+    additionalPoint: "se ucciso o <50%",
+    seq: ["RESHAPE THE LAND", "ENSNARE", "BREAKTHROUGH"]
+  },
+  {
+    name: "PUBLIC DEMOSTRATION",
+    desc: "**nemico** con 2 minion a 2\"",
+    additionalPoint: "scheme a 1\"",
+    seq: ["ASSASSINATE", "HARNESS THE LAYLANE", "DETONATE CHARGE"]
+  },
+  {
+    name: "RESHAPE THE LAND",
+    desc: "4 **markers** complessivi in metà nemica",
+    additionalPoint: "5 invece",
+    seq: ["PUBLIC DEMOSTRATION", "BREAKTHROUGH", "SEARCH THE AREA"]
+  },
+  {
+    name: "RUNIC BINDING",
+    desc: "mettere Scheme a triangolo con dentro nemico",
+    additionalPoint: "somma SS nemici 15+",
+    seq: ["LEAVE YOUR MARK", "TAKE THE HIGHGROUND", "ENSNARE"]
+  },
+  {
+    name: "SCOUT THE ROOFTOPS",
+    desc: "2 scheme su scenici altezza > 2 senza nemici a 2\"",
+    additionalPoint: "terzo in metà nemica",
+    seq: ["DETONATE CHARGE", "GRAVE ROBBING", "LEAVE YOUR MARK"]
+  },
+  {
+    name: "SEARCH THE AREA",
+    desc: "3 scheme a 1\" da scenico senza nemici a 2\"",
+    additionalPoint: "1 scheme a fine turno dopo remove",
+    seq: ["DETONATE CHARGE", "SCOUT THE ROOFTOPS", "HARNESS THE LAYLANE"]
+  },
+  {
+    name: "TAKE THE HIGHGROUND",
+    desc: "2 scenici alti controllati",
+    additionalPoint: "3 invece",
+    seq: ["MAKE IT LOOK LIKE AN ACCIDENT", "ENSNARE", "SEARCH THE AREA"]
+  }
 ];
 
 let selected = null;
@@ -129,11 +214,15 @@ function render() {
     if (selected && schemes.find(x => x.name === selected).seq.includes(s.name))
       div.classList.add("sequence");
 
-    div.innerHTML = `
-      <div class="name">${s.name}</div>
-      <div class="desc">${s.desc.toLowerCase()}</div>
-      <div class="seq">(${s.seq.join(", ")})</div>
-    `;
+div.innerHTML = `
+  <div class="name">${s.name}</div>
+  <div class="desc">${formatBold(s.desc)}</div>
+  ${s.additionalPoint
+    ? `<div class="additional">${formatBold(s.additionalPoint)}</div>`
+    : ""}
+  <div class="seq">(${s.seq.join(", ")})</div>
+`;
+
 
     div.onclick = () => {
       if (selected) history.push(selected);
@@ -144,6 +233,12 @@ function render() {
 
     list.appendChild(div);
   });
+}
+
+function formatBold(text) {
+  return text
+    .toLowerCase()
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 }
 
 undoFab.onclick = () => {
