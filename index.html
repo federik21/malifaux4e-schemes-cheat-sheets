@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Schemes</title>
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Material Web -->
+  <script type="module" src="https://unpkg.com/@material/web/all.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Roboto, system-ui;
+      background: #f5f5f5;
+    }
+
+    header {
+      background: white;
+      padding: 16px;
+      font-size: 20px;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0,0,0,.2);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .list {
+      padding: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .card.selected {
+      background: #fff59d;
+    }
+
+    .card.sequence {
+      background: #bbdefb;
+    }
+
+    .name {
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .desc {
+      font-size: 14px;
+      opacity: .7;
+    }
+
+    .seq {
+      font-size: 12px;
+      opacity: .6;
+    }
+
+    .fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>Schemes</header>
+
+<div class="list" id="list"></div>
+
+<!-- FAB Undo -->
+<md-fab class="fab" id="undoFab" label="Undo" style="display:none;">
+  <span class="material-icons" slot="icon">undo</span>
+</md-fab>
+
+<script>
+const schemes = [
+  { name:"ASSASSINATE", desc:"nemico a 50% (uccidi)", seq:["DETONATE CHARGE","SCOUT THE ROOFTOPS","RUNIC BINDING"] },
+  { name:"BREAKTHROUGH", desc:"scheme in deploy nemico senza nemici a 2\"", seq:["ASSASSINATE","PUBLIC DEMOSTRATION","FRAME JOB"] },
+  { name:"DETONATE CHARGE", desc:"2 scheme a 2\" da nemici (3)", seq:["GRAVE ROBBING","TAKE THE HIGHGROUND","RUNIC BINDING"] },
+  { name:"ENSNARE", desc:"2 scheme a 2\" da modello unico", seq:["RESHAPE THE LAND","SEARCH THE AREA","FRAME JOB"] },
+  { name:"FRAME JOB", desc:"amico ferito in metà nemica", seq:["HARNESS THE LAYLANE","SCOUT THE ROOFTOPS","PUBLIC DEMOSTRATION"] },
+  { name:"GRAVE ROBBING", desc:"nemico ucciso a 2\"", seq:["MAKE IT LOOK LIKE AN ACCIDENT","LEAVE YOUR MARK","RUNIC BINDING"] },
+  { name:"HARNESS THE LAYLANE", desc:"2 scheme su centerline", seq:["GRAVE ROBBING","SCOUT THE ROOFTOPS","ASSASSINATE"] },
+  { name:"LEAVE YOUR MARK", desc:"più schemi a 1\" dal centro", seq:["MAKE IT LOOK LIKE AN ACCIDENT","TAKE THE HIGHGROUND","RESHAPE THE LAND"] },
+  { name:"MAKE IT LOOK LIKE AN ACCIDENT", desc:"nemico cade", seq:["RESHAPE THE LAND","ENSNARE","BREAKTHROUGH"] },
+  { name:"PUBLIC DEMOSTRATION", desc:"nemico con 2 minion", seq:["ASSASSINATE","HARNESS THE LAYLANE","DETONATE CHARGE"] },
+  { name:"RESHAPE THE LAND", desc:"4 marker in metà nemica", seq:["PUBLIC DEMOSTRATION","BREAKTHROUGH","SEARCH THE AREA"] },
+  { name:"RUNIC BINDING", desc:"scheme a triangolo", seq:["LEAVE YOUR MARK","TAKE THE HIGHGROUND","ENSNARE"] },
+  { name:"SCOUT THE ROOFTOPS", desc:"2 scheme su scenici alti", seq:["DETONATE CHARGE","GRAVE ROBBING","LEAVE YOUR MARK"] },
+  { name:"SEARCH THE AREA", desc:"3 scheme su scenico", seq:["DETONATE CHARGE","SCOUT THE ROOFTOPS","HARNESS THE LAYLANE"] },
+  { name:"TAKE THE HIGHGROUND", desc:"2 scenici alti controllati", seq:["MAKE IT LOOK LIKE AN ACCIDENT","ENSNARE","SEARCH THE AREA"] }
+];
+
+let selected = null;
+let history = [];
+
+const list = document.getElementById("list");
+const undoFab = document.getElementById("undoFab");
+
+function render() {
+  list.innerHTML = "";
+
+  let ordered = [...schemes];
+  if (selected) {
+    ordered = [
+      schemes.find(s => s.name === selected),
+      ...schemes.filter(s => schemes.find(x => x.name === selected).seq.includes(s.name)),
+      ...schemes.filter(s => s.name !== selected && !schemes.find(x => x.name === selected).seq.includes(s.name))
+    ];
+  }
+
+  ordered.forEach(s => {
+    const div = document.createElement("div");
+    div.className = "card";
+
+    if (selected === s.name) div.classList.add("selected");
+    if (selected && schemes.find(x => x.name === selected).seq.includes(s.name))
+      div.classList.add("sequence");
+
+    div.innerHTML = `
+      <div class="name">${s.name}</div>
+      <div class="desc">${s.desc.toLowerCase()}</div>
+      <div class="seq">(${s.seq.join(", ")})</div>
+    `;
+
+    div.onclick = () => {
+      if (selected) history.push(selected);
+      selected = s.name;
+      undoFab.style.display = "block";
+      render();
+    };
+
+    list.appendChild(div);
+  });
+}
+
+undoFab.onclick = () => {
+  selected = history.pop() || null;
+  if (!selected) undoFab.style.display = "none";
+  render();
+};
+
+render();
+</script>
+
+</body>
+</html>
