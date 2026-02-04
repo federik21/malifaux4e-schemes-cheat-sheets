@@ -1,97 +1,173 @@
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <title>Schemes</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Schemi</title>
 
-  <!-- Material Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+:root {
+  --yellow: #ffe082;
+  --blue: #bbdefb;
+  --green: #c8e6c9;
+  --border: #ddd;
+  --nav: #1f2937;
+}
 
-  <!-- Material Web -->
-  <script type="module" src="https://unpkg.com/@material/web/all.js"></script>
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f5f5f5;
+}
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Roboto, system-ui;
-      background: #f5f5f5;
-    }
+/* NAVBAR */
+header {
+  height: 56px;
+  background: var(--nav);
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
 
-    header {
-      background: white;
-      padding: 16px;
-      font-size: 20px;
-      font-weight: 500;
-      box-shadow: 0 2px 6px rgba(0,0,0,.2);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+header button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
 
-    .list {
-      padding: 16px;
-    }
+header h1 {
+  flex: 1;
+  margin: 0 12px;
+  font-size: 18px;
+}
 
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,.2);
-      cursor: pointer;
-      transition: background .2s;
-    }
+/* DRAWER */
+#drawer {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100%;
+  background: white;
+  box-shadow: 2px 0 6px rgba(0,0,0,.2);
+  transition: left .25s;
+  z-index: 10;
+}
 
-    .card.selected {
-      background: #fff59d;
-    }
+#drawer.open {
+  left: 0;
+}
 
-    .card.sequence {
-      background: #bbdefb;
-    }
+#drawer h2 {
+  padding: 16px;
+  margin: 0;
+  border-bottom: 1px solid var(--border);
+}
+#lockBtn.active {
+  background: #ffcdd2; /* rosso chiaro quando bloccato */
+}
+#drawer button {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
 
-    .name {
-      font-weight: 600;
-      text-transform: uppercase;
-    }
+#drawer button:hover {
+  background: #eee;
+}
 
-    .desc {
-      font-size: 14px;
-      opacity: .7;
-    }
+/* CONTENT */
+main {
+  padding: 12px;
 
-    .seq {
-      font-size: 12px;
-      opacity: .6;
-    }
+}
 
-    .fab {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-    }
+/* TABLE */
+.scheme {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
 
-    .additional {
+.scheme.selected { background: var(--yellow); }
+.scheme.sequence { background: var(--blue); }
+.scheme.initial  { background: var(--green); }
+.scheme {
+  background: white;
+  transition: background 0.25s;
+}
+
+/* fallback */
+.scheme.single {
+  background: var(--color);
+}
+
+.name {
+  font-weight: 700;
+}
+
+.desc {
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.additional {
   font-size: 13px;
-  color: #1976d2;       /* blu Material */
-  font-weight: 500;
+  color: #555;
   margin-top: 2px;
 }
-strong {
-  font-weight: 600;
+
+.seq {
+  font-size: 12px;
+  color: #666;
+  margin-top: 6px;
 }
-  </style>
+
+#enemyBtn.active {
+  background: #ffcdd2;
+}
+
+</style>
 </head>
 
 <body>
 
-<header>Schemes</header>
+<header>
+  <button id="menuBtn">☰</button>
+  <h1>Schemi</h1>
+  <button id="undoBtn" disabled>↩</button>
+  <button id="enemyBtn">⚔</button>
+  <button id="lockBtn">🔒</button>
+</header>
 
-<div class="list" id="list"></div>
+<div id="drawer">
+  <h2>Menu</h2>
+  <button id="initialBtn">Schemi iniziali</button>
+  <div class="sidebar">
+  <h3>Istruzioni</h3>
+  <ul>
+    <li>Gli schemi iniziali sono verdi (fino alla prima selezione).</li>
+    <li>Modalità Nemico: seleziona i 3 possibili schemi del nemico.</li>
+    <li>Il tuo schema é in giallo quando lo selezioni</li>
+    <li>Se ce da annotare qualcosa di specifico, é in grassetto</li>
+    <li>Gli schemi in sequenza diventano blu.</li>
+    <li>Long press su uno schema nemico fa passare a quelli successivi.</li>
+    <li>Usa il lucchetto 🔒 per bloccare i click accidentali.</li>
+    <li>Undo ripristina lo stato precedente.</li>
+  </ul>
+</div>
+</div>
 
-<!-- FAB Undo -->
-<md-fab class="fab" id="undoFab" label="Undo" style="display:none;">
-  <span class="material-icons" slot="icon">undo</span>
-</md-fab>
+<main id="content"></main>
 
 <script>
 const schemes = [
@@ -115,7 +191,7 @@ const schemes = [
   },
   {
     name: "ENSNARE",
-    desc: "2 scheme a 2\" da un modello unico",
+    desc: "2 scheme a 2\" da 1 nemico Unico",
     additionalPoint: "engaged da uno meno costoso",
     seq: ["RESHAPE THE LAND", "SEARCH THE AREA", "FRAME JOB"]
   },
@@ -169,13 +245,13 @@ const schemes = [
   },
   {
     name: "SCOUT THE ROOFTOPS",
-    desc: "2 scheme su scenici altezza > 2 senza nemici a 2\"",
+    desc: "2 scheme su scenici* altezza > 2 senza nemici a 2\"",
     additionalPoint: "terzo in metà nemica",
     seq: ["DETONATE CHARGE", "GRAVE ROBBING", "LEAVE YOUR MARK"]
   },
   {
     name: "SEARCH THE AREA",
-    desc: "3 scheme a 1\" da scenico senza nemici a 2\"",
+    desc: "3 scheme a 1\" da scenico* senza nemici a 2\"",
     additionalPoint: "1 scheme a fine turno dopo remove",
     seq: ["DETONATE CHARGE", "SCOUT THE ROOFTOPS", "HARNESS THE LAYLANE"]
   },
@@ -189,48 +265,72 @@ const schemes = [
 
 let selected = null;
 let history = [];
+let initialSchemes = [];
+let initialMode = false;
+let enemySchemes = [];
+let enemyMode = false;
+let clickLocked = false;
 
-const list = document.getElementById("list");
-const undoFab = document.getElementById("undoFab");
+const content = document.getElementById("content");
+const undoBtn = document.getElementById("undoBtn");
+const drawer = document.getElementById("drawer");
 
+/* RENDER */
 function render() {
-  list.innerHTML = "";
+  content.innerHTML = "";
 
-  let ordered = [...schemes];
-  if (selected) {
-    ordered = [
-      schemes.find(s => s.name === selected),
-      ...schemes.filter(s => schemes.find(x => x.name === selected).seq.includes(s.name)),
-      ...schemes.filter(s => s.name !== selected && !schemes.find(x => x.name === selected).seq.includes(s.name))
-    ];
-  }
+  const selectedScheme = selected ? schemes.find(s => s.name === selected) : null;
+
+  // FILTRI DEI GRUPPI
+  const selectedGroup = selectedScheme ? [selectedScheme] : [];
+  const sequenceGroup = selectedScheme
+    ? schemes.filter(s => selectedScheme.seq.includes(s.name))
+    : [];
+  const enemyGroup = schemes.filter(s => enemySchemes.includes(s.name) && s.name !== selected &&
+    !(selectedScheme && selectedScheme.seq.includes(s.name)));
+  const restGroup = schemes.filter(s =>
+    !initialSchemes.includes(s.name) &&
+    s.name !== selected &&
+    !(selectedScheme && selectedScheme.seq.includes(s.name)) &&
+    !enemySchemes.includes(s.name)
+  );
+
+  // ORDINE FINALE: dopo selezione, iniziali non in cima
+  const ordered = [
+    ...selectedGroup,   // giallo
+    ...sequenceGroup,   // blu
+    ...enemyGroup,      // rosso
+    ...restGroup      // bianco
+  ];
 
   ordered.forEach(s => {
     const div = document.createElement("div");
-    div.className = "card";
+    div.className = "scheme";
+    div.style.background = computeBackground(s.name); // gradient multi-color
 
-    if (selected === s.name) div.classList.add("selected");
-    if (selected && schemes.find(x => x.name === selected).seq.includes(s.name))
-      div.classList.add("sequence");
+div.onclick = () => {
+  if (clickLocked) return; // blocca click accidentali
+  clickScheme(s.name);
+};
 
-div.innerHTML = `
-  <div class="name">${s.name}</div>
-  <div class="desc">${formatBold(s.desc)}</div>
-  ${s.additionalPoint
-    ? `<div class="additional">${formatBold(s.additionalPoint)}</div>`
-    : ""}
-  <div class="seq">(${s.seq.join(", ")})</div>
-`;
-
-
-    div.onclick = () => {
-      if (selected) history.push(selected);
-      selected = s.name;
-      undoFab.style.display = "block";
+      // long press solo in modalità nemico e riga rossa
+  if (enemyMode && enemySchemes.includes(s.name)) {
+    addLongPressListener(div, () => {
+      const seq = s.seq.filter(x => !enemySchemes.includes(x));
+      // sostituisci i nemici correnti con gli schemi in sequenza
+      enemySchemes = [...seq];
       render();
-    };
+    });
+  }
 
-    list.appendChild(div);
+
+    div.innerHTML = `
+      <div class="name">${s.name}</div>
+      <div class="desc">${formatBold(s.desc)}</div>
+      ${s.additionalPoint ? `<div class="additional">+ 1 se ${formatBold(s.additionalPoint)}</div>` : ""}
+      <div class="seq">(${s.seq.join(", ")})</div>
+    `;
+    content.appendChild(div);
   });
 }
 
@@ -239,12 +339,145 @@ function formatBold(text) {
     .toLowerCase()
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 }
+/* CLICK LOGIC */
+const lockBtn = document.getElementById("lockBtn");
 
-undoFab.onclick = () => {
-  selected = history.pop() || null;
-  if (!selected) undoFab.style.display = "none";
+lockBtn.onclick = () => {
+  clickLocked = !clickLocked;
+  lockBtn.classList.toggle("active", clickLocked);
+};
+
+
+function clickScheme(name) {
+  history.push({
+    selected,
+    initialSchemes: [...initialSchemes],
+    enemySchemes: [...enemySchemes],
+    enemyMode,
+    initialMode
+  });
+  undoBtn.disabled = false;
+
+  // MODALITÀ NEMICO
+  if (enemyMode) {
+    if (enemySchemes.includes(name)) {
+      enemySchemes = enemySchemes.filter(s => s !== name);
+    } else if (enemySchemes.length < 3) {
+      enemySchemes.push(name);
+    }
+    render();
+    return;
+  }
+
+  // MODALITÀ INIZIALI (come prima)
+  if (initialMode) {
+    if (!initialSchemes.includes(name) && initialSchemes.length < 3)
+        initialSchemes.push(name);
+        enemySchemes.push(name);
+    if (initialSchemes.length === 3)
+      initialMode = false;
+    render();
+    return;
+  }
+
+  // NORMALE
+  initialSchemes = [];
+  selected = name;
+  render();
+}
+const enemyBtn = document.getElementById("enemyBtn");
+
+enemyBtn.onclick = () => {
+  if (enemyMode) {
+    // reset
+    enemyMode = false;
+    enemyBtn.classList.remove("active");
+  } else {
+    enemyMode = true;
+    enemyBtn.classList.add("active");
+  }
   render();
 };
+
+function isColored(schemeName) {
+  return (
+    selected === schemeName ||
+    (selected && schemes.find(x => x.name === selected).seq.includes(schemeName)) ||
+    initialSchemes.includes(schemeName) ||
+    enemySchemes.includes(schemeName)
+  );
+}
+
+
+function computeBackground(schemeName) {
+  const colors = [];
+
+  if (selected === schemeName) colors.push("#ffe082");       // giallo
+  else if (
+    selected &&
+    schemes.find(x => x.name === selected).seq.includes(schemeName)
+  ) colors.push("#bbdefb");                                   // blu
+
+  if (initialSchemes.includes(schemeName))
+    colors.push("#c8e6c9");                                   // verde
+
+  if (enemySchemes.includes(schemeName))
+    colors.push("#ffcdd2");                                   // rosso
+
+  if (colors.length === 0) return "white";
+  if (colors.length === 1) return colors[0];
+
+  return `linear-gradient(90deg, ${colors.join(", ")})`;
+}
+
+/* UNDO */
+undoBtn.onclick = () => {
+  const prev = history.pop();
+  if (!prev) return;
+
+  selected = prev.selected;
+  initialSchemes = prev.initialSchemes;
+  initialMode = prev.initialMode;
+  undoBtn.disabled = history.length === 0;
+  render();
+};
+
+/* MENU */
+document.getElementById("menuBtn").onclick = () =>
+  drawer.classList.toggle("open");
+
+document.getElementById("initialBtn").onclick = () => {
+  drawer.classList.remove("open");
+  selected = null;
+  history = [];
+  initialSchemes = [];
+  initialMode = true;
+  enemySchemes = []
+  undoBtn.disabled = true;
+  render();
+};
+
+function addLongPressListener(element, callback, duration = 500) {
+  let timer = null;
+
+  element.addEventListener("touchstart", e => {
+    timer = setTimeout(() => callback(e), duration);
+  });
+
+  element.addEventListener("touchend", e => {
+    clearTimeout(timer);
+  });
+
+  // supporto mouse per desktop
+  element.addEventListener("mousedown", e => {
+    timer = setTimeout(() => callback(e), duration);
+  });
+
+  element.addEventListener("mouseup", e => {
+    clearTimeout(timer);
+  });
+}
+
 
 render();
 </script>
