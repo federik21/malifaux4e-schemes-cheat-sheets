@@ -329,9 +329,8 @@ div.onclick = () => {
       // long press solo in modalità nemico e riga rossa
   if (enemyMode && enemySchemes.includes(s.name)) {
     addLongPressListener(div, () => {
-      const seq = s.seq.filter(x => !enemySchemes.includes(x));
       // sostituisci i nemici correnti con gli schemi in sequenza
-      enemySchemes = [...seq];
+      enemySchemes = [...s.seq];
       render();
     });
   }
