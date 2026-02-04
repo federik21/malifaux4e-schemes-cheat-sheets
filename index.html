@@ -151,12 +151,13 @@ main {
 
 <div id="drawer">
   <h2>Menu</h2>
-  <button id="initialBtn">Schemi iniziali</button>
+  <button id="closeSidebar">Chiudi ✖</button>
+  <button id="initialBtn">Start: Imposta iniziali</button>
   <div class="sidebar">
   <h3>Istruzioni</h3>
   <ul>
     <li>Gli schemi iniziali sono verdi (fino alla prima selezione).</li>
-    <li>Modalità Nemico: seleziona i 3 possibili schemi del nemico.</li>
+    <li>Modalità Nemico: seleziona manualmente i 3 possibili schemi del nemico.</li>
     <li>Il tuo schema é in giallo quando lo selezioni</li>
     <li>Se ce da annotare qualcosa di specifico, é in grassetto</li>
     <li>Gli schemi in sequenza diventano blu.</li>
@@ -274,6 +275,11 @@ let clickLocked = false;
 const content = document.getElementById("content");
 const undoBtn = document.getElementById("undoBtn");
 const drawer = document.getElementById("drawer");
+const closemenu = document.getElementById("drawer");
+
+closemenu.onclick = () => {
+  drawer.classList.remove("open");
+}
 
 /* RENDER */
 function render() {
